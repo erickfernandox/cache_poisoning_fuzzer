@@ -1,0 +1,47 @@
+id: cache-poisoning-6
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 10
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?{{cache_key}}=15 HTTP/1.1
+        Host: {{Hostname}}
+        X-Auth-Type: {{cache_header}}.xfck
+        x-auth-user: {{cache_header}}.xfcl
+        x-auth-userid: {{cache_header}}.xfcm
+        x-auth-username: {{cache_header}}.xfcn
+        X-Cache: {{cache_header}}.xfco
+        X-Cacheable: {{cache_header}}.xfcp
+        X-Cache-AppMode: {{cache_header}}.xfcq
+        X-Cache-Bucket: {{cache_header}}.xfcr
+        X-Cache-Buster: {{cache_header}}.xfcs
+        X-CACHE-CLUSTER: {{cache_header}}.xfct
+        X-Cache-Context: {{cache_header}}.xfcu
+        x-cachecontrol: {{cache_header}}.xfcv
+        X-Cached: {{cache_header}}.xfcx
+        X-Cache-Group: {{cache_header}}.xfcz
+        X-Cache-Hits: {{cache_header}}.xfda
+        X-Cache-Lookup: {{cache_header}}.xfdb
+        x-cache-me: {{cache_header}}.xfdc
+        X-Cache-Status: {{cache_header}}.xfdd
+
+
+      - |
+        GET /?{{cache_key}}=15 HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
