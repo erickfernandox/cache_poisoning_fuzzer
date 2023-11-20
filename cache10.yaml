@@ -1,5 +1,4 @@
-
-id: cache-poisoning-9
+id: cache-poisoning-10
 info:
   name: Cache Poisoning Detection
   author: erickfernandox
@@ -15,7 +14,7 @@ variables:
 http:
   - raw:
       - |
-        GET /?{{cache_key}}=17 HTTP/1.1
+        GET /?{{cache_key}}=18 HTTP/1.1
         Host: {{Hostname}}
         X-Cookie-selectedCountry: {{cache_header}}.xfdg
         X-Cookie-selectedCurrency: {{cache_header}}.xfdg
@@ -37,7 +36,7 @@ http:
 
 
       - |
-        GET /?{{cache_key}}=17 HTTP/1.1
+        GET /?{{cache_key}}=18 HTTP/1.1
         Host: {{Hostname}}
 
     matchers:
