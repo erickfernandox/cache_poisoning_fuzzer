@@ -16,6 +16,7 @@ http:
   - raw:
       - |
         GET /?{{cache_key}}=10 HTTP/1.1
+        Host: {{Hostname}}        
         X-Ads: {{cache_header}}.xfaa
         x-aol-domain: {{cache_header}}.xfab
         X-API-Auth: {{cache_header}}.xfac
