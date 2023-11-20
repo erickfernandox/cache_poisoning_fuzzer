@@ -1,0 +1,45 @@
+id: cache-poisoning-4
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?{{cache_key}}=12 HTTP/1.1
+        Host: {{Hostname}}
+        X-App-ComprasParaguai: {{cache_header}}.xfap
+        X-App-Currency: {{cache_header}}.xfaq
+        X-APP-JSON: {{cache_header}}.xfar
+        X-App-Lat: {{cache_header}}.xfas
+        X-App-Latitude: {{cache_header}}.xfat
+        x-apple-client-application: {{cache_header}}.xfau
+        x-apple-store-front: {{cache_header}}.xfav
+        X-App-Lng: {{cache_header}}.xfax
+        X-App-Longitude: {{cache_header}}.xfaz
+        X-App-Time-Zone: {{cache_header}}.xfaq
+        x-app-token: {{cache_header}}.xfba
+        X-App-Version: {{cache_header}}.xfbb
+        X-Arb: {{cache_header}}.xfbc
+        X-AREQUESTID: {{cache_header}}.xfbd
+        x-arr-log-id: {{cache_header}}.xfbe
+        x-arr-ssl: {{cache_header}}.xfbf
+
+
+      - |
+        GET /?{{cache_key}}=12 HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
