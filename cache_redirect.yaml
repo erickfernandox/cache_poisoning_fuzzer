@@ -1,4 +1,4 @@
-id: cache-poisoning-11
+id: cache-poisoning-redirect
 info:
   name: Cache Poisoning Detection
   author: erickfernandox
