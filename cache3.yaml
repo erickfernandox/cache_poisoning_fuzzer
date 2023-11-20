@@ -1,0 +1,42 @@
+id: cache-poisoning-3
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 3
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?{{cache_key}}=10 HTTP/1.1
+        X-Ads: {{cache_header}}.xfaa
+        x-aol-domain: {{cache_header}}.xfab
+        X-API-Auth: {{cache_header}}.xfac
+        x-api-gateway: {{cache_header}}.xfad
+        x-api-key: {{cache_header}}.xfae
+        X-ApiKey: {{cache_header}}.xfaf
+        X-Api-Language: {{cache_header}}.xfag
+        X-api-search-elastic: {{cache_header}}.xfah
+        x-api-signature: {{cache_header}}.xfai
+        x-api-timestamp: {{cache_header}}.xfaj
+        X-Api-Token: {{cache_header}}.xfak
+        x-apitoken: {{cache_header}}.xfal
+        x-api-version: {{cache_header}}.xfam
+        X-app: {{cache_header}}.xfan
+        X-AppAdvice-Client: {{cache_header}}.xfao
+
+      - |
+        GET /?{{cache_key}}=10 HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
