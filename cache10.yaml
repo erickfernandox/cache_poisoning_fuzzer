@@ -1,1 +1,46 @@
 
+id: cache-poisoning-9
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 10
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?{{cache_key}}=17 HTTP/1.1
+        Host: {{Hostname}}
+        X-Cookie-selectedCountry: {{cache_header}}.xfdg
+        X-Cookie-selectedCurrency: {{cache_header}}.xfdg
+        X-Cookpad-Forwarded-Proto: {{cache_header}}.xfdg
+        X-Correlation-ID: {{cache_header}}.xfdg
+        x-country: {{cache_header}}.xfdg
+        x-csrftoken: {{cache_header}}.xfdg
+        x-cuid: {{cache_header}}.xfdg
+        x-currency: {{cache_header}}.xfdg
+        X-Currency-Code: {{cache_header}}.xfdg
+        X-Currency-Display: {{cache_header}}.xfdg
+        X-Current-Currency: {{cache_header}}.xfdg
+        x-custom: {{cache_header}}.xfdg
+        X-Customer-Name: {{cache_header}}.xfdg
+        X-Custom-Shops: {{cache_header}}.xfdg
+        x-cv: {{cache_header}}.xfdg
+        X-CW-Scope: {{cache_header}}.xfdg
+        X-Daa-Tunnel: {{cache_header}}.xfdg
+
+
+      - |
+        GET /?{{cache_key}}=17 HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
