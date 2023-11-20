@@ -1,0 +1,49 @@
+id: cache-poisoning-8
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 10
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?{{cache_key}}=16 HTTP/1.1
+        Host: {{Hostname}}
+        X-Cache-Tag: {{cache_header}}.xfde
+        X-Cache-Ver: {{cache_header}}.xfdf
+        X-Call-Origin: {{cache_header}}.xfdg
+        X-City: {{cache_header}}.xfdh
+        X-City-Id: {{cache_header}}.xfdi
+        X-CK-SourceAuth: {{cache_header}}.xfdj
+        X-Clacks-Overhead: {{cache_header}}.xfdk
+        X-CLEAN-IO: {{cache_header}}.xfdl
+        X-ClickOnceSupport: {{cache_header}}.xfdm
+        X-Client: {{cache_header}}.xfdn
+        X-CLIENT-COUNTRY: {{cache_header}}.xfdo
+        X-Client-Forwarded-Proto: {{cache_header}}.xfdp
+        x-client-host: {{cache_header}}.xfdq
+        x-client-id: {{cache_header}}.xfdr
+        x-client-ip: {{cache_header}}.xfds
+        x-clientip: {{cache_header}}.xfdt
+        X-ClientIP-DMZ: {{cache_header}}.xfdu
+        x-Clientip-For: {{cache_header}}.xfdv
+        x-client-key: {{cache_header}}.xfdx
+        x-client-os: {{cache_header}}.xfdz
+        x-client-os-ver: {{cache_header}}.xfdg
+
+
+      - |
+        GET /?{{cache_key}}=16 HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
