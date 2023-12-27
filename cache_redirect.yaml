@@ -26,7 +26,8 @@ http:
       - |
         GET /?{{cache_key}}=20 HTTP/1.1
         Host: {{Hostname}}
-
+        
+    matchers-condition: and
     matchers:
       - type: dsl
         dsl:
