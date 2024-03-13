@@ -1,0 +1,44 @@
+id: cache-poisoning-redirect-cloudflare
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 10
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /teste.css?{{cache_key}}=20 HTTP/1.1
+        Host: {{Hostname}}
+        X-Forwarded-Host: {{cache_header}}.com
+        X-Forwarded-For: {{cache_header}}.com        
+        X-Forwarded-Scheme: http
+        X-Forwarded-Prop: http
+
+
+
+      - |
+        GET /teste.xss?{{cache_key}}=20 HTTP/1.1
+        Host: {{Hostname}}
+        
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
+
+      - type: status
+        status:
+          - 301
+          - 302
+          - 307
+          - 308
+          - 303
+          - 306
+        condition: or          
