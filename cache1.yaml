@@ -1,4 +1,4 @@
-id: cache-poisoning-xss
+id: cache-poisoning-xss1
 
 info:
   name: Cache Poisoning - Stored XSS
