@@ -1,4 +1,4 @@
-id: cache-poisoning-xss
+id: cache-poisoning-xss2
 
 info:
   name: Cache Poisoning - Stored XSS
@@ -15,7 +15,7 @@ info:
 variables:
   cache_key: "{{to_lower(rand_base(6))}}"
   cache_header: "{{to_lower(rand_base(6))}}"
-  xss_payload: '"></script><script>alert(document.domain);</script>'
+  xss_payload: '"><img src=x onerror=alert(1)>'
 
 http:
   - raw:
