@@ -1,0 +1,34 @@
+id: cache-poisoning-param17
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?compare={{cache_header}}937&demo={{cache_header}}938&mod={{cache_header}}939&free={{cache_header}}940&abo_type={{cache_header}}941&otag={{cache_header}}942&privacy={{cache_header}}943&pageId={{cache_header}}944&incident_id={{cache_header}}945&SuccessUrl={{cache_header}}946&ad_group_id={{cache_header}}947&accountNumber={{cache_header}}948&policyNumber={{cache_header}}949&agentId={{cache_header}}950&traittype={{cache_header}}951&redirectTo={{cache_header}}952&shortlink={{cache_header}}953&start_page={{cache_header}}954&filter-subtype={{cache_header}}955&attr={{cache_header}}956&bucket={{cache_header}}957&ship_to={{cache_header}}958&activity={{cache_header}}959&trade={{cache_header}}960&swap={{cache_header}}961&markets={{cache_header}}962&copytrading={{cache_header}}963&recharge={{cache_header}}964&red={{cache_header}}965&expired={{cache_header}}966&chkout={{cache_header}}967&proto={{cache_header}}968&credential={{cache_header}}969&credencial={{cache_header}}970&scoped={{cache_header}}971&utm_creative={{cache_header}}972&search_terms={{cache_header}}973&hunt={{cache_header}}974&organization={{cache_header}}975&back={{cache_header}}976&notify={{cache_header}}977&successRedirect={{cache_header}}978&itm_data={{cache_header}}979&webinar={{cache_header}}980 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
