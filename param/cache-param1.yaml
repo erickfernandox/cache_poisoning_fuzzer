@@ -1,0 +1,34 @@
+id: cache-poisoning-param1
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?qs={{cache_header}}1&search={{cache_header}}2&query={{cache_header}}3&keywords={{cache_header}}4&term={{cache_header}}5&text={{cache_header}}6&input={{cache_header}}7&value={{cache_header}}8&username={{cache_header}}9&password={{cache_header}}10&name={{cache_header}}11&email={{cache_header}}12&comment={{cache_header}}13&message={{cache_header}}14&body={{cache_header}}15&title={{cache_header}}16&subject={{cache_header}}17&description={{cache_header}}18&content={{cache_header}}19&id={{cache_header}}20&user={{cache_header}}21&uid={{cache_header}}22&redirect_url={{cache_header}}23&return={{cache_header}}24&url=https://{{cache_header}}25&titulo={{cache_header}}26&link={{cache_header}}27&goto={{cache_header}}28&page={{cache_header}}29&redir={{cache_header}}30&redirect={{cache_header}}31&redirect_to={{cache_header}}32&token=XSS&next={{cache_header}}33&callback={{cache_header}}34&referrer={{cache_header}}35 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
