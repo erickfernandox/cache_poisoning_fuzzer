@@ -1,0 +1,34 @@
+id: cache-poisoning-param20
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?gatewayID={{cache_header}}1066&filterAttributes={{cache_header}}1067&navPage={{cache_header}}1068&nextUrl={{cache_header}}1069&tagFilters={{cache_header}}1070&communityId={{cache_header}}1071&remote={{cache_header}}1072&securityId={{cache_header}}1073&UserToken={{cache_header}}1074&sysparam={{cache_header}}1075&topic={{cache_header}}1076&pgid={{cache_header}}1077&subtype={{cache_header}}1078&referrer_id={{cache_header}}1079&workspace={{cache_header}}1080&promotion={{cache_header}}1081&useCase={{cache_header}}1082&album={{cache_header}}1083&addurl={{cache_header}}1084&locationType={{cache_header}}1085&viewAs={{cache_header}}1086&subsection={{cache_header}}1087&userLanguage={{cache_header}}1088&filePath={{cache_header}}1089&tracker={{cache_header}}1090&placement={{cache_header}}1091&authDomain={{cache_header}}1092&appURL={{cache_header}}1093&team={{cache_header}}1094 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
