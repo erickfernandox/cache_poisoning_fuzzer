@@ -1,0 +1,34 @@
+id: cache-poisoning-param3
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?securitytext=FUZZ440&panel=FUZZ441&subscrptionId=FUZZ442&promocode=FUZZ443&ordertype=FUZZ444&reg=FUZZ445&sms=FUZZ446&user_in=FUZZ447&item=FUZZ448&license_number=FUZZ449&originalurl=FUZZ450&formid=FUZZ451&reg_ip=FUZZ452&thumbnail=FUZZ453&arrival=FUZZ454&meeting_id=FUZZ455&internal=FUZZ456&ColumnId=FUZZ457&culture=FUZZ458&cflang=FUZZ459&filter_by=FUZZ460&sourceid=FUZZ461&sourceapp=FUZZ462&pageurl=FUZZ463&page_url=FUZZ464&stream=FUZZ465&ping=FUZZ466&execution=FUZZ467&location_id=FUZZ468&RootFolder=FUZZ469&root=FUZZ470&click=FUZZ471&ctag=FUZZ472&messageid=FUZZ473&message_id=FUZZ474&queryinput=FUZZ475&order_id=FUZZ476&keyword=FUZZ477&appId=FUZZ478&api=FUZZ479&releaseid=FUZZ480&relay=FUZZ481&root_id=FUZZ482&unknown=FUZZ483&auth_req=FUZZ484&search_geolocation=FUZZ485&params=FUZZ486&persons=FUZZ487&person=FUZZ488&search_request=FUZZ489&d=FUZZ490&purchases=FUZZ491&widget=FUZZ492&targetUrl=FUZZ493&public=FUZZ494&requestUrl=FUZZ495&redirect_back=FUZZ496&ListId=FUZZ497&module=FUZZ498&PageNum=FUZZ499&option=FUZZ500&CustomerID=FUZZ501&company_id=FUZZ502&login_link=FUZZ503&keys=FUZZ504&paymentType=FUZZ505&errorcode=FUZZ506&courseCode=FUZZ507&post_type=FUZZ508&send_to=FUZZ509&refid=FUZZ510&vouchercode=FUZZ511&os_destination=FUZZ512&redirected-from=FUZZ513&return_to_url=FUZZ514 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
