@@ -1,0 +1,34 @@
+id: cache-poisoning-param11
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?deadline={{cache_header}}589&productKey={{cache_header}}590&bundleId={{cache_header}}591&searchid={{cache_header}}592&tracking={{cache_header}}593&cid={{cache_header}}594&element_id={{cache_header}}595&char={{cache_header}}596&custom={{cache_header}}596&act={{cache_header}}597&agent={{cache_header}}598&shop_id={{cache_header}}599&otp_type={{cache_header}}600&otp={{cache_header}}601&fromUrl={{cache_header}}602&count={{cache_header}}603&policy={{cache_header}}604&expire={{cache_header}}605&mime_type={{cache_header}}606&cd={{cache_header}}607&flag={{cache_header}}608&eventId={{cache_header}}609&_={{cache_header}}610&ssl={{cache_header}}611&comments={{cache_header}}612&pr-redirect={{cache_header}}613&subcategories={{cache_header}}614&collection={{cache_header}}615&requirements={{cache_header}}616&param={{cache_header}}617&contest={{cache_header}}618&photoId={{cache_header}}619&fb_action_ids={{cache_header}}620&highlight={{cache_header}}621&join={{cache_header}}622&membertype={{cache_header}}623&active={{cache_header}}624&subsection={{cache_header}}625&release_id={{cache_header}}626&sound={{cache_header}}627&track={{cache_header}}628&embed={{cache_header}}629&jumpTo={{cache_header}}630&segment={{cache_header}}631&dateRange={{cache_header}}632&hex={{cache_header}}633&base64={{cache_header}}634&promoID={{cache_header}}635&promo_id={{cache_header}}636&eventType={{cache_header}}637&audio={{cache_header}}638&video={{cache_header}}639&pageIndex={{cache_header}}640 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
