@@ -1,0 +1,33 @@
+id: cache-poisoning-param7
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?dialog={{cache_header}}272&box={{cache_header}}273&commentary={{cache_header}}274&statement={{cache_header}}275&commentary={{cache_header}}276&explanation={{cache_header}}277&guideline={{cache_header}}278&tip={{cache_header}}279&instruction={{cache_header}}280&pointer={{cache_header}}281&suggestion={{cache_header}}282&direction={{cache_header}}283&advisory={{cache_header}}284&remark={{cache_header}}285&notation={{cache_header}}286&output={{cache_header}}287&outcome={{cache_header}}288&reflection={{cache_header}}289&label={{cache_header}}290&mensagem={{cache_header}}291&texto={{cache_header}}292&conteudo={{cache_header}}293&payload={{cache_header}}294&aviso={{cache_header}}295&alerta={{cache_header}}296&notificacao={{cache_header}}297&instrucao={{cache_header}}298&comunicado={{cache_header}}299erromsg={{cache_header}}300&sucesso={{cache_header}}301&btn={{cache_header}}302&button={{cache_header}}303&leight={{cache_header}}304&host={{cache_header}}305&domain={{cache_header}}306&http={{cache_header}}307&subdomain={{cache_header}}308&server={{cache_header}}309&origin={{cache_header}}310&ip={{cache_header}}311&protocol={{cache_header}}312&gateway={{cache_header}}313&site={{cache_header}}314&platform={{cache_header}}315&language={{cache_header}}316&encode={{cache_header}}317&scheme={{cache_header}}318&consulta={{cache_header}}319&submit={{cache_header}}320&method={{cache_header}}321&data-id={{cache_header}}322&authType={{cache_header}}323&isRegister={{cache_header}}324&loginRequestId={{cache_header}}325&client={{cache_header}}336&filename={{cache_header}}337&ext={{cache_header}}338&external={{cache_header}}339&utm_source={{cache_header}}340&visibility={{cache_header}}341&season={{cache_header}}342&monitor={{cache_header}}343&Itemid={{cache_header}}344&promo={{cache_header}}345&category={{cache_header}}346&subscribe={{cache_header}}347&unsubscribe={{cache_header}}348&unsubscribe_token={{cache_header}}349&event={{cache_header}}350&local={{cache_header}}351&brand={{cache_header}}352&kind={{cache_header}}353&department={{cache_header}}354&product={{cache_header}}355&product_id={{cache_header}}356&productId={{cache_header}}357&zipcode={{cache_header}}358&day={{cache_header}}359&phone={{cache_header}}360&cc={{cache_header}}361&command={{cache_header}}362 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
