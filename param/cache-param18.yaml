@@ -1,0 +1,34 @@
+id: cache-poisoning-param18
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?campID={{cache_header}}981&agencyId={{cache_header}}982&registration={{cache_header}}983&SessionKey={{cache_header}}984&seed={{cache_header}}985&source_page={{cache_header}}986&loc=987&imageId={{cache_header}}987&jobid={{cache_header}}988&policyholder={{cache_header}}989&preview_id={{cache_header}}990&dataURL={{cache_header}}991&env={{cache_header}}992&nobounce={{cache_header}}993&serv={{cache_header}}994&auth_uri={{cache_header}}995&EndCategory={{cache_header}}996&_requestid={{cache_header}}997&tab_name={{cache_header}}998&custom-css={{cache_header}}999&x-campaign={{cache_header}}1000&partNumber={{cache_header}}1001&referral={{cache_header}}1002&coupon={{cache_header}}1003&ref_type={{cache_header}}1004&{{cache_header}}1005&destinationAddress={{cache_header}}1006&traffic_src={{cache_header}}1007&sap-client={{cache_header}}1008&appwebview={{cache_header}}1009&ticketReference={{cache_header}}1010&ByPath={{cache_header}}1011&lang_redirect={{cache_header}}1012&schedule={{cache_header}}1013&screen={{cache_header}}1014&exchange={{cache_header}}1015&asset_type={{cache_header}}1016&sc_channel={{cache_header}}1017&ssoType={{cache_header}}1018&colorName={{cache_header}}1019&details={{cache_header}}1020&_encoding={{cache_header}}1021&encoding={{cache_header}}1022&expand={{cache_header}}1023 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
