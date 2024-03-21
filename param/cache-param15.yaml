@@ -1,0 +1,34 @@
+id: cache-poisoning-param3
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?codReuniao={{cache_header}}838&PlayerID={{cache_header}}839&pagewanted={{cache_header}}840&event_time_id={{cache_header}}841&atual={{cache_header}}842&filtro={{cache_header}}843&canonicalUrl={{cache_header}}844&query_id={{cache_header}}845&productTypeId={{cache_header}}846&chooseCity={{cache_header}}847&Identidade={{cache_header}}848&init={{cache_header}}849&gameId={{cache_header}}850&layer={{cache_header}}851&pro_id={{cache_header}}852&render={{cache_header}}853&error_on_page={{cache_header}}854&turno={{cache_header}}855&IdNot={{cache_header}}856&add-to-cart={{cache_header}}857&attachment_id={{cache_header}}858&signo={{cache_header}}859&sensor={{cache_header}}860&libraries861&library={{cache_header}}862&perPage={{cache_header}}863&abrefoto={{cache_header}}864&codProfile={{cache_header}}865&linkurl={{cache_header}}866&lookup={{cache_header}}867&idtUrl={{cache_header}}868&variant={{cache_header}}869&urls={{cache_header}}870&canal={{cache_header}}871&img_index={{cache_header}}872&incidente={{cache_header}}873&global={{cache_header}}874&shade={{cache_header}}875&time_continue={{cache_header}}876&area={{cache_header}}877&ref_src={{cache_header}}878&remove_item={{cache_header}}879&redir_esc={{cache_header}}880&idLayer={{cache_header}}881&is_registration={{cache_header}}882&nodeid={{cache_header}}883&containerId={{cache_header}}884&paged={{cache_header}}885&rnd={{cache_header}}886&serviceCode={{cache_header}}887 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
