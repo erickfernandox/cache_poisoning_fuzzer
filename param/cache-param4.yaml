@@ -1,0 +1,33 @@
+id: cache-poisoning-param4
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?price={{cache_header}}106&v={{cache_header}}107&pag={{cache_header}}108&feed={{cache_header}}109&n={{cache_header}}110&ids={{cache_header}}111&origem={{cache_header}}112&group={{cache_header}}113&cat={{cache_header}}114&preview={{cache_header}}115&nome={{cache_header}}116&from={{cache_header}}117&fileId={{cache_header}}118&err={{cache_header}}119&page_id={{cache_header}}120&region={{cache_header}}121&order={{cache_header}}122&id_url={{cache_header}}123&nav={{cache_header}}124&by={{cache_header}}125&pg={{cache_header}}126&admin={{cache_header}}127&api_key={{cache_header}}128&configUrl={{cache_header}}129&baseUrl={{cache_header}}130&shortUrl={{cache_header}}131&token=XSS&mode={{cache_header}}132&foto={{cache_header}}133&photo={{cache_header}}134&msisdn={{cache_header}}135&pagid={{cache_header}}136&country={{cache_header}}137&city={{cache_header}}138&state={{cache_header}}139&recommendationId={{cache_header}}140&limit={{cache_header}}141&profile={{cache_header}}142&signature={{cache_header}}143&stage={{cache_header}}144&share={{cache_header}}145&accessCode={{cache_header}}146&gid={{cache_header}}147&galerie={{cache_header}}148&include={{cache_header}}149&source={{cache_header}}150&filter={{cache_header}}151&data_url={{cache_header}}152&cookie={{cache_header}}153&videoId={{cache_header}}154&slug={{cache_header}}155&resize={{cache_header}}156&w={{cache_header}}157&h={{cache_header}}157&nextPage={{cache_header}}158&tab={{cache_header}}159 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
