@@ -1,0 +1,34 @@
+id: cache-poisoning-param10
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?storeId={{cache_header}}515&catalogId={{cache_header}}516&langId={{cache_header}}517&pageView={{cache_header}}518&orderBy={{cache_header}}519&homePageURL={{cache_header}}520&absoluteURL={{cache_header}}521&DirectoryPath={{cache_header}}522&environment={{cache_header}}523&shopUserId={{cache_header}}524&agnt={{cache_header}}525&pixel={{cache_header}}526&partner={{cache_header}}527&partner_id={{cache_header}}528&cashback={{cache_header}}529&lang_id={{cache_header}}530&page_type={{cache_header}}531&reg-type={{cache_header}}532&account_name={{cache_header}}533&market={{cache_header}}534&site_id={{cache_header}}535&campaignid={{cache_header}}536&creative={{cache_header}}537&matchtype={{cache_header}}538&targetid={{cache_header}}539&available={{cache_header}}540&modules={{cache_header}}541&reset={{cache_header}}542&ids={{cache_header}}543&userEmail={{cache_header}}544&cm={{cache_header}}545&friend={{cache_header}}546&contract={{cache_header}}547&online={{cache_header}}548&route={{cache_header}}549&routes={{cache_header}}550&IP={{cache_header}}551&trader={{cache_header}}552&mobile={{cache_header}}553&review_id={{cache_header}}554&back_url={{cache_header}}555&amount={{cache_header}}556&filetype={{cache_header}}557&search_type={{cache_header}}558&step={{cache_header}}559&order_by={{cache_header}}560&feed={{cache_header}}561&transaction_id={{cache_header}}561&memory={{cache_header}}562&ClientId={{cache_header}}563&referralCode={{cache_header}}563&operator_id={{cache_header}}564&network={{cache_header}}565&product_ids={{cache_header}}566&csrf_token={{cache_header}}567&menu_id={{cache_header}}568&authuser={{cache_header}}569&section={{cache_header}}570&faq={{cache_header}}571&rate={{cache_header}}572&idsite={{cache_header}}573&provider={{cache_header}}574&id_category={{cache_header}}575&official={{cache_header}}576&identifier={{cache_header}}577&check_in={{cache_header}}578&view_by={{cache_header}}579&componentID={{cache_header}}580&validate_token={{cache_header}}581&val={{cache_header}}582&invoice={{cache_header}}583&ticket={{cache_header}}584&detail={{cache_header}}585&curtype={{cache_header}}586&action_type={{cache_header}}587&uri_path={{cache_header}}588 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
