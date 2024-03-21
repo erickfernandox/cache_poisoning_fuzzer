@@ -1,0 +1,33 @@
+id: cache-poisoning-param4
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?size={{cache_header}}160&cache={{cache_header}}161&APIKey={{cache_header}}162&random={{cache_header}}163&alt={{cache_header}}164&teamid={{cache_header}}165&folder={{cache_header}}166&registrationId={{cache_header}}167&src={{cache_header}}168&courseId={{cache_header}}169&rebuild={{cache_header}}170&r={{cache_header}}171&endpoint={{cache_header}}172&siteID={{cache_header}}173&year={{cache_header}}174&typeId={{cache_header}}175&idpartner={{cache_header}}176&receiver={{cache_header}}177&level={{cache_header}}178&fbclid={{cache_header}}179&values={{cache_header}}180&onSuccess={{cache_header}}181&theme={{cache_header}}182&user_id={{cache_header}}183&userId={{cache_header}}184&template={{cache_header}}185&version={{cache_header}}186&select={{cache_header}}187&token=XSS&changeTo={{cache_header}}188&os={{cache_header}}189&ver={{cache_header}}190&SAMLRequest={{cache_header}}191&uuid={{cache_header}}192&config={{cache_header}}193&linkId={{cache_header}}194&client_id={{cache_header}}195&locale={{cache_header}}196&view_type={{cache_header}}197&qualify={{cache_header}}198&googleID={{cache_header}}199&campaign={{cache_header}}200&status={{cache_header}}201&service={{cache_header}}202&class={{cache_header}}203&crop={{cache_header}}204&application={{cache_header}}205&uri={{cache_header}}206&report={{cache_header}}207&event_name={{cache_header}}208&debug={{cache_header}}209&tipo={{cache_header}}210 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
