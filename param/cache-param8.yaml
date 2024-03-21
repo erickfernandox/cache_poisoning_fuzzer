@@ -1,0 +1,33 @@
+id: cache-poisoning-param8
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?querystring={{cache_header}}363&charset={{cache_header}}364&currency={{cache_header}}365&device={{cache_header}}366&browser={{cache_header}}367&access_token={{cache_header}}368&age={{cache_header}}369&firstname={{cache_header}}370&lastname={{cache_header}}371&sobrenome={{cache_header}}372&address={{cache_header}}373&role={{cache_header}}374&color={{cache_header}}375&quantity={{cache_header}}376&price={{cache_header}}377&discount={{cache_header}}378&rating={{cache_header}}379&location={{cache_header}}380&startDate={{cache_header}}381&endDate={{cache_header}}382&sessionID={{cache_header}}383&oauthToken={{cache_header}}384&errorURL={{cache_header}}385&proxy={{cache_header}}386&radius={{cache_header}}387&callbackUrl={{cache_header}}388&languageCode={{cache_header}}389&model={{cache_header}}390&userAgent={{cache_header}}391&utm_medium={{cache_header}}392&utm_campaign={{cache_header}}393&utm_content={{cache_header}}394&trackingCode={{cache_header}}395&session={{cache_header}}396&timestamp={{cache_header}}397&nonce={{cache_header}}398&hash={{cache_header}}399&grant_type={{cache_header}}400&client_secret={{cache_header}}401&realm={{cache_header}}402&resource={{cache_header}}403&preload={{cache_header}}404&async={{cache_header}}405&autoplay={{cache_header}}406&control={{cache_header}}407&controls={{cache_header}}408&href={{cache_header}}409&start={{cache_header}}410&end={{cache_header}}411&frameborder={{cache_header}}412&referrer-policy={{cache_header}}413&property={{cache_header}}414&itemprop={{cache_header}}415&datatype={{cache_header}}416&about={{cache_header}}417&typeof={{cache_header}}418&hreflang={{cache_header}}419&xmlns={{cache_header}}420&placeholder={{cache_header}}421&request_id={{cache_header}}422&resource_url={{cache_header}}423&contextType={{cache_header}}424&challenge_url={{cache_header}}425&linguagem={{cache_header}}426&idCanal={{cache_header}}427&channel={{cache_header}}428&uf={{cache_header}}429&target_id={{cache_header}}430&manufacturer={{cache_header}}431&t={{cache_header}}432&scale={{cache_header}}433&jsessionid={{cache_header}}434&load={{cache_header}}435&forward={{cache_header}}436&userAction={{cache_header}}437&ssoToken={{cache_header}}438&SSO_token={{cache_header}}439 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
