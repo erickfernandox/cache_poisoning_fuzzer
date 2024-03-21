@@ -1,0 +1,34 @@
+id: cache-poisoning-param13
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?plataform={{cache_header}}685&club={{cache_header}}686&shop={{cache_header}}687&buy={{cache_header}}688&deal={{cache_header}}689&cookieDomain={{cache_header}}690&cookie_lifetime={{cache_header}}691&lifetime={{cache_header}}692&timeout={{cache_header}}693&utm_source_url={{cache_header}}694&side_bar={{cache_header}}695&head={{cache_header}}696&copyright={{cache_header}}697&services={{cache_header}}698&bounce={{cache_header}}699&form_id={{cache_header}}700&a={{cache_header}}701&b={{cache_header}}702&c={{cache_header}}703&d={{cache_header}}704&e={{cache_header}}705&f={{cache_header}}706&g={{cache_header}}707&h={{cache_header}}708&i={{cache_header}}709&j={{cache_header}}710&k={{cache_header}}711&l={{cache_header}}712&m={{cache_header}}713&n={{cache_header}}714&o={{cache_header}}715&p={{cache_header}}716&q={{cache_header}}717&r={{cache_header}}718&t={{cache_header}}719&u={{cache_header}}720&v={{cache_header}}721&w={{cache_header}}722&x={{cache_header}}723&y={{cache_header}}724&z={{cache_header}}725&aa={{cache_header}}726&bb={{cache_header}}727&cc={{cache_header}}728&dd={{cache_header}}729&ee={{cache_header}}730&ff={{cache_header}}731&gg={{cache_header}}732&hh={{cache_header}}733&ii={{cache_header}}734&jj={{cache_header}}735&kk={{cache_header}}736&ll={{cache_header}}737&mm={{cache_header}}738&nn={{cache_header}}739&oo={{cache_header}}740&pp={{cache_header}}741&qq={{cache_header}}742&rr={{cache_header}}743&ss={{cache_header}}744&tt={{cache_header}}745&uu={{cache_header}}746&vv={{cache_header}}747&ww={{cache_header}}748&xx={{cache_header}}749&yy={{cache_header}}750&zz={{cache_header}}751 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
