@@ -1,0 +1,34 @@
+id: cache-poisoning-param3
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?container={{cache_header}}778&number={{cache_header}}779&word={{cache_header}}780&page_no={{cache_header}}781&aid={{cache_header}}782&bid={{cache_header}}783&cid={{cache_header}}784&did={{cache_header}}785&eid={{cache_header}}786&fid={{cache_header}}787&gid={{cache_header}}788&hid={{cache_header}}789&iid={{cache_header}}790&jid={{cache_header}}791&kid={{cache_header}}792&lid={{cache_header}}793&mid={{cache_header}}794&nid={{cache_header}}795&oid={{cache_header}}796&pid={{cache_header}}797&qid={{cache_header}}798&rid={{cache_header}}799&sid={{cache_header}}800&tid={{cache_header}}801&u_id={{cache_header}}802&vid={{cache_header}}803&wid={{cache_header}}804&xid={{cache_header}}805&yid={{cache_header}}806&zid={{cache_header}}807&eventName={{cache_header}}808&dt={{cache_header}}809&ed={{cache_header}}810&id_area={{cache_header}}811&viewlocale={{cache_header}}812&idnoticia={{cache_header}}813&estilo={{cache_header}}814&tagId={{cache_header}}815&prd={{cache_header}}816&paypal={{cache_header}}817&idioma={{cache_header}}818&editionId={{cache_header}}819&gallery={{cache_header}}820&up={{cache_header}}821&regiao={{cache_header}}822&ordem={{cache_header}}823&page_code={{cache_header}}824&docId={{cache_header}}825&vitrine={{cache_header}}826&task={{cache_header}}827&hash_identificacao={{cache_header}}828&onload={{cache_header}}829&filme={{cache_header}}830&servico={{cache_header}}831&refer={{cache_header}}832&codNoticia={{cache_header}}833&hashId={{cache_header}}834&modo={{cache_header}}835&sourcepage={{cache_header}}836&idConteudo={{cache_header}}837 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
