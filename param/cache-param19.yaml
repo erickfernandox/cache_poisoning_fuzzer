@@ -1,0 +1,34 @@
+id: cache-poisoning-param19
+
+info:
+  name: Cache Poisoning Detection
+  author: erickfernandox
+  severity: low
+  tags: cache,generic
+  metadata:
+    max-request: 5
+
+variables:
+  cache_key: "{{to_lower(rand_base(6))}}"
+  cache_header: "{{to_lower(rand_base(6))}}"
+
+http:
+  - raw:
+      - |
+        GET /?question={{cache_header}}1024&continue_to={{cache_header}}1025&diff={{cache_header}}1026&forgot={{cache_header}}1027&purpose={{cache_header}}1028&safe_search={{cache_header}}1029&languageid={{cache_header}}1030&offering_id={{cache_header}}1031&sysparm_query={{cache_header}}1032&suffix={{cache_header}}1033&organization_slug={{cache_header}}1034&merchant={{cache_header}}1035&viewkey={{cache_header}}1036&pkey={{cache_header}}1037&agreed={{cache_header}}1038&EntityID={{cache_header}}1039&viewportId={{cache_header}}1040&resource_tag={{cache_header}}1041&propertyCode={{cache_header}}1042&ptype={{cache_header}}1043&modecode={{cache_header}}1044&evidence={{cache_header}}1045&contact-person={{cache_header}}1046&bundle_key={{cache_header}}1047&new_app={{cache_header}}1048&originUrl={{cache_header}}1049&ViewName={{cache_header}}1050&spaceID={{cache_header}}1051&AuthState={{cache_header}}1052&subjectCategory={{cache_header}}1053&score={{cache_header}}1054&achievement={{cache_header}}1055&tenantId={{cache_header}}1056&change_lang={{cache_header}}1057&agencyNumber={{cache_header}}1058&node={{cache_header}}1059&referral_path={{cache_header}}1060&files={{cache_header}}1061&mailTo={{cache_header}}1062&nick={{cache_header}}1063&sitename={{cache_header}}1064&mediaItemId={{cache_header}}1065 HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+
+      - |
+        GET / HTTP/1.1
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Accept-Language: en-US;q=0.9,en;q=0.8
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(body_2, cache_header)'
