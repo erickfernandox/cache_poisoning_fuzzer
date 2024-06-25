@@ -1,4 +1,4 @@
-id: cache-poisoning-xss1-ext
+id: cache-poisoning-xss1-cloudflare
 
 info:
   name: Cache Poisoning - Stored XSS
