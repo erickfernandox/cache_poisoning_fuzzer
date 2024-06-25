@@ -27,11 +27,13 @@ http:
         GET /?{{cache_key}}=20 HTTP/1.1
         Host: {{Hostname}}
         
+    stop-at-first-match: true
     matchers-condition: and
     matchers:
-      - type: dsl
-        dsl:
-          - 'contains(body_2, cache_header)'
+      - type: regex
+        part: header
+        regex:
+          - '(?m)^(?:Location\s*?:\s*?)(?:https?:\/\/|\/\/|\/\\\\|\/\\)(?:[a-zA-Z0-9\-_\.@]*){{cache_header}}\.com\/?(\/|[^.].*)?$'
 
       - type: status
         status:
