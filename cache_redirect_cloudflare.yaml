@@ -21,10 +21,8 @@ http:
         X-Forwarded-Scheme: http
         X-Forwarded-Prop: http
 
-
-
       - |
-        GET /teste.xss?{{cache_key}}=20 HTTP/1.1
+        GET /teste.css?{{cache_key}}=20 HTTP/1.1
         Host: {{Hostname}}
         
     matchers-condition: and
