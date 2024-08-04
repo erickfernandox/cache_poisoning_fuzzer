@@ -10,7 +10,7 @@ info:
 
 variables:
   cache_key: "{{to_lower(rand_base(6))}}"
-  cache_header: "'\"teste"
+  cache_header: "</script><teste>"
 
 http:
   - raw:
